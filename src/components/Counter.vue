@@ -72,6 +72,7 @@ export default {
 }
 
 .deep-button {
+  touch-action: manipulation;
   width: 150px;
   height: 150px;
   border-radius: 50%;
