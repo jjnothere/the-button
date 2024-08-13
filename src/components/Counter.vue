@@ -37,7 +37,11 @@ export default {
       }
     },
     connectWebSocket() {
-      this.socket = new WebSocket(`ws://${window.location.host}`)
+      const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws'
+      const host = window.location.host
+      const socketUrl = `${protocol}://${host}`
+
+      this.socket = new WebSocket(socketUrl)
 
       this.socket.onmessage = (event) => {
         const data = JSON.parse(event.data)
