@@ -1,7 +1,9 @@
 <template>
   <div class="counter-container">
-    <p class="intro-text">Let's see how high we can collectively get this number.</p>
-    <div class="counter">Clicks since 8/13/2024: {{ count }}</div>
+    <p class="intro-text">
+      Let's see how high we can collectively get this number. Clicks since 8/13/2024:
+    </p>
+    <div class="counter">{{ count }}</div>
     <button class="deep-button" @click="incrementCount">Click Me</button>
   </div>
 </template>
