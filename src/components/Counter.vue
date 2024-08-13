@@ -11,11 +11,13 @@ import axios from 'axios'
 export default {
   data() {
     return {
-      count: 0
+      count: 0,
+      socket: null
     }
   },
   created() {
     this.fetchCount()
+    this.connectWebSocket()
   },
   methods: {
     async fetchCount() {
@@ -32,6 +34,18 @@ export default {
         this.count = response.data.count
       } catch (error) {
         console.error('Error incrementing count:', error)
+      }
+    },
+    connectWebSocket() {
+      this.socket = new WebSocket(`ws://${window.location.host}`)
+
+      this.socket.onmessage = (event) => {
+        const data = JSON.parse(event.data)
+        this.count = data.count
+      }
+
+      this.socket.onclose = () => {
+        console.log('WebSocket connection closed')
       }
     }
   }
