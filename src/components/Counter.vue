@@ -5,6 +5,11 @@
     </p>
     <div class="counter">{{ count }}</div>
     <button class="deep-button" @click="incrementCount">Click Me</button>
+
+    <!-- Error Modal -->
+    <div v-if="showErrorModal" class="error-modal">
+      <p>{{ errorMessage }}</p>
+    </div>
   </div>
 </template>
 
@@ -15,7 +20,9 @@ export default {
   data() {
     return {
       count: 0,
-      socket: null
+      socket: null,
+      showErrorModal: false, // Control visibility of the error modal
+      errorMessage: '' // The error message to display
     }
   },
   created() {
@@ -37,6 +44,7 @@ export default {
         this.count = response.data.count
       } catch (error) {
         console.error('Error incrementing count:', error)
+        this.showErrorModalWithMessage(error.response.data.error || 'An error occurred')
       }
     },
     connectWebSocket() {
@@ -54,6 +62,13 @@ export default {
       this.socket.onclose = () => {
         console.log('WebSocket connection closed')
       }
+    },
+    showErrorModalWithMessage(message) {
+      this.errorMessage = message
+      this.showErrorModal = true
+      setTimeout(() => {
+        this.showErrorModal = false
+      }, 3000) // Hide after 3 seconds
     }
   }
 }
@@ -102,5 +117,21 @@ export default {
 .deep-button:active {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
   transform: translateY(10px);
+}
+
+.error-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #ffdddd;
+  border: 1px solid #ff0000;
+  padding: 20px;
+  border-radius: 10px;
+  z-index: 1000;
+  text-align: center;
+  font-size: 1.2em;
+  color: #a94442;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
 }
 </style>
