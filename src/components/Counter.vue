@@ -229,4 +229,20 @@ export default {
     opacity: 0;
   }
 }
+
+/* Error modal styling */
+.error-modal {
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #f44336;
+  color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 10000;
+  font-size: 1.2em;
+  text-align: center;
+}
 </style>
