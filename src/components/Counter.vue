@@ -3,15 +3,17 @@
     <p class="intro-text">
       Let's see how high we can collectively get this number. Clicks since 8/13/2024:
     </p>
-    <div class="counter">
+    <div
+      class="counter"
+      :class="{ 'animate-bounce': animateBounce }"
+      @animationend="resetAnimation"
+    >
       {{ count }}
     </div>
     <button class="deep-button" @click="incrementCount">Click Me</button>
 
-    <!-- Emoji Explosion Container -->
-    <div v-if="showEmojiExplosion" class="emoji-explosion-container">
-      <span v-for="emoji in emojis" :key="emoji.id" class="emoji">{{ emoji.symbol }}</span>
-    </div>
+    <!-- Confetti Explosion -->
+    <ConfettiExplosion v-if="showConfetti" @animationend="resetConfetti" />
 
     <!-- Error Modal -->
     <div v-if="showErrorModal" class="error-modal">
@@ -22,19 +24,25 @@
 
 <script>
 import axios from 'axios'
+import ConfettiExplosion from 'vue-confetti-explosion'
 
 export default {
+  components: {
+    ConfettiExplosion
+  },
   data() {
     return {
       count: 0,
-      showEmojiExplosion: false,
-      emojis: [], // Array to hold emojis
+      socket: null,
       showErrorModal: false, // Control visibility of the error modal
-      errorMessage: '' // The error message to display
+      errorMessage: '', // The error message to display
+      animateBounce: false, // Control the bounce animation
+      showConfetti: false // Control the confetti explosion
     }
   },
   created() {
     this.fetchCount()
+    this.connectWebSocket()
   },
   methods: {
     async fetchCount() {
@@ -43,7 +51,6 @@ export default {
         this.count = response.data.count
       } catch (error) {
         console.error('Error fetching count:', error)
-        this.showErrorModalWithMessage('Failed to fetch the current count.')
       }
     },
     async incrementCount() {
@@ -51,39 +58,46 @@ export default {
         const response = await axios.post('/api/increment')
         this.count = response.data.count
 
-        // Check for special numbers
+        // Trigger animation and confetti on multiples of 100
         if (this.count % 100 === 0) {
-          this.triggerEmojiExplosion('💯')
-        } else if (this.count % 100 === 69) {
-          this.triggerEmojiExplosion('👌')
+          this.animateBounce = true
+          this.showConfetti = true
         }
       } catch (error) {
         console.error('Error incrementing count:', error)
-        this.showErrorModalWithMessage('Failed to increment the count.')
+        this.showErrorModalWithMessage(error.response.data.error || 'An error occurred')
       }
     },
-    triggerEmojiExplosion(emoji) {
-      // Add the specific emoji to the array
-      this.emojis = this.generateEmojis(emoji)
-      this.showEmojiExplosion = true
+    connectWebSocket() {
+      const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws'
+      const host = window.location.host
+      const socketUrl = `${protocol}://${host}`
 
-      // Hide the explosion after some time
-      setTimeout(() => {
-        this.showEmojiExplosion = false
-      }, 1500)
+      this.socket = new WebSocket(socketUrl)
+
+      this.socket.onmessage = (event) => {
+        const data = JSON.parse(event.data)
+        this.count = data.count
+      }
+
+      this.socket.onclose = () => {
+        console.log('WebSocket connection closed')
+      }
     },
-    generateEmojis(emoji) {
-      return Array.from({ length: 30 }, (_, i) => ({
-        id: i,
-        symbol: emoji
-      }))
+    resetAnimation() {
+      // Reset the animation class after it finishes
+      this.animateBounce = false
+    },
+    resetConfetti() {
+      // Hide confetti after the animation ends
+      this.showConfetti = false
     },
     showErrorModalWithMessage(message) {
       this.errorMessage = message
       this.showErrorModal = true
       setTimeout(() => {
         this.showErrorModal = false
-      }, 3000)
+      }, 3000) // Hide after 3 seconds
     }
   }
 }
@@ -109,6 +123,7 @@ export default {
 .counter {
   font-size: 2em;
   margin-bottom: 20px;
+  transition: transform 0.5s ease; /* Smooth transition for the animation */
 }
 
 .deep-button {
@@ -134,35 +149,24 @@ export default {
   transform: translateY(10px);
 }
 
-.emoji-explosion-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-  z-index: 9999;
-}
-
-.emoji {
-  position: absolute;
-  font-size: 2em;
-  animation: explode 1.5s ease forwards;
-}
-
-@keyframes explode {
-  0% {
-    transform: translateY(0) scale(1);
-    opacity: 1;
-  }
+/* Bounce animation */
+@keyframes bounce {
+  0%,
+  20%,
+  50%,
+  80%,
   100% {
-    transform: translateY(calc(100vh + 100px)) scale(0.5);
-    opacity: 0;
+    transform: translateY(0);
   }
+  40% {
+    transform: translateY(-30px);
+  }
+  60% {
+    transform: translateY(-15px);
+  }
+}
+
+.animate-bounce {
+  animation: bounce 1s ease;
 }
 </style>
