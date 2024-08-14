@@ -39,6 +39,7 @@ export default {
     return {
       count: 0,
       socket: null,
+      token: '', // Store the token
       showErrorModal: false, // Control visibility of the error modal
       errorMessage: '', // The error message to display
       animateBounce: false, // Control the bounce animation
@@ -48,10 +49,19 @@ export default {
     }
   },
   created() {
+    this.fetchToken() // Fetch the token when the component is created
     this.fetchCount()
     this.connectWebSocket()
   },
   methods: {
+    async fetchToken() {
+      try {
+        const response = await axios.get('/api/token')
+        this.token = response.data.token // Store the token
+      } catch (error) {
+        console.error('Error fetching token:', error)
+      }
+    },
     async fetchCount() {
       try {
         const response = await axios.get('/api/count')
@@ -62,7 +72,15 @@ export default {
     },
     async incrementCount() {
       try {
-        const response = await axios.post('/api/increment')
+        const response = await axios.post(
+          '/api/increment',
+          {},
+          {
+            headers: {
+              'x-access-token': this.token // Include the token in the request headers
+            }
+          }
+        )
         this.count = response.data.count
 
         // Trigger animation, confetti, and emoji explosion based on count
@@ -236,7 +254,7 @@ export default {
   top: 20%;
   left: 50%;
   transform: translateX(-50%);
-  background-color: #f44336;
+  background-color: #e88780;
   color: white;
   padding: 20px;
   border-radius: 8px;
