@@ -21,6 +21,8 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   data() {
     return {
@@ -31,15 +33,33 @@ export default {
       errorMessage: '' // The error message to display
     }
   },
+  created() {
+    this.fetchCount()
+  },
   methods: {
-    incrementCount() {
-      this.count += 1
+    async fetchCount() {
+      try {
+        const response = await axios.get('/api/count')
+        this.count = response.data.count
+      } catch (error) {
+        console.error('Error fetching count:', error)
+        this.showErrorModalWithMessage('Failed to fetch the current count.')
+      }
+    },
+    async incrementCount() {
+      try {
+        const response = await axios.post('/api/increment')
+        this.count = response.data.count
 
-      // Check for special numbers
-      if (this.count % 100 === 0) {
-        this.triggerEmojiExplosion('💯')
-      } else if (this.count % 100 === 69) {
-        this.triggerEmojiExplosion('👌')
+        // Check for special numbers
+        if (this.count % 100 === 0) {
+          this.triggerEmojiExplosion('💯')
+        } else if (this.count % 100 === 69) {
+          this.triggerEmojiExplosion('👌')
+        }
+      } catch (error) {
+        console.error('Error incrementing count:', error)
+        this.showErrorModalWithMessage('Failed to increment the count.')
       }
     },
     triggerEmojiExplosion(emoji) {
@@ -57,6 +77,13 @@ export default {
         id: i,
         symbol: emoji
       }))
+    },
+    showErrorModalWithMessage(message) {
+      this.errorMessage = message
+      this.showErrorModal = true
+      setTimeout(() => {
+        this.showErrorModal = false
+      }, 3000)
     }
   }
 }
