@@ -3,8 +3,17 @@
     <p class="intro-text">
       Let's see how high we can collectively get this number. Clicks since 8/13/2024:
     </p>
-    <div class="counter">{{ count }}</div>
+    <div
+      class="counter"
+      :class="{ 'animate-bounce': animateBounce }"
+      @animationend="resetAnimation"
+    >
+      {{ count }}
+    </div>
     <button class="deep-button" @click="incrementCount">Click Me</button>
+
+    <!-- Confetti Explosion -->
+    <ConfettiExplosion v-if="showConfetti" @animationend="resetConfetti" />
 
     <!-- Error Modal -->
     <div v-if="showErrorModal" class="error-modal">
@@ -15,14 +24,20 @@
 
 <script>
 import axios from 'axios'
+import ConfettiExplosion from 'vue-confetti-explosion'
 
 export default {
+  components: {
+    ConfettiExplosion
+  },
   data() {
     return {
       count: 0,
       socket: null,
       showErrorModal: false, // Control visibility of the error modal
-      errorMessage: '' // The error message to display
+      errorMessage: '', // The error message to display
+      animateBounce: false, // Control the bounce animation
+      showConfetti: false // Control the confetti explosion
     }
   },
   created() {
@@ -42,6 +57,12 @@ export default {
       try {
         const response = await axios.post('/api/increment')
         this.count = response.data.count
+
+        // Trigger animation and confetti on multiples of 100
+        if (this.count % 100 === 0) {
+          this.animateBounce = true
+          this.showConfetti = true
+        }
       } catch (error) {
         console.error('Error incrementing count:', error)
         this.showErrorModalWithMessage(error.response.data.error || 'An error occurred')
@@ -62,6 +83,14 @@ export default {
       this.socket.onclose = () => {
         console.log('WebSocket connection closed')
       }
+    },
+    resetAnimation() {
+      // Reset the animation class after it finishes
+      this.animateBounce = false
+    },
+    resetConfetti() {
+      // Hide confetti after the animation ends
+      this.showConfetti = false
     },
     showErrorModalWithMessage(message) {
       this.errorMessage = message
@@ -94,6 +123,7 @@ export default {
 .counter {
   font-size: 2em;
   margin-bottom: 20px;
+  transition: transform 0.5s ease; /* Smooth transition for the animation */
 }
 
 .deep-button {
@@ -119,19 +149,24 @@ export default {
   transform: translateY(10px);
 }
 
-.error-modal {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: #ffdddd;
-  border: 1px solid #ff0000;
-  padding: 20px;
-  border-radius: 10px;
-  z-index: 1000;
-  text-align: center;
-  font-size: 1.2em;
-  color: #a94442;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+/* Bounce animation */
+@keyframes bounce {
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-30px);
+  }
+  60% {
+    transform: translateY(-15px);
+  }
+}
+
+.animate-bounce {
+  animation: bounce 1s ease;
 }
 </style>
