@@ -15,6 +15,11 @@
     <!-- Confetti Explosion -->
     <ConfettiExplosion v-if="showConfetti" @animationend="resetConfetti" />
 
+    <!-- Emoji Explosion Container -->
+    <div v-if="showEmojiExplosion" class="emoji-explosion-container">
+      <span v-for="emoji in emojis" :key="emoji.id" class="emoji">{{ emoji.symbol }}</span>
+    </div>
+
     <!-- Error Modal -->
     <div v-if="showErrorModal" class="error-modal">
       <p>{{ errorMessage }}</p>
@@ -37,7 +42,9 @@ export default {
       showErrorModal: false, // Control visibility of the error modal
       errorMessage: '', // The error message to display
       animateBounce: false, // Control the bounce animation
-      showConfetti: false // Control the confetti explosion
+      showConfetti: false, // Control the confetti explosion
+      showEmojiExplosion: false, // Control the emoji explosion
+      emojis: [] // Array to hold emojis
     }
   },
   created() {
@@ -58,10 +65,14 @@ export default {
         const response = await axios.post('/api/increment')
         this.count = response.data.count
 
-        // Trigger animation and confetti on multiples of 100
+        // Trigger animation, confetti, and emoji explosion based on count
         if (this.count % 100 === 0) {
           this.animateBounce = true
           this.showConfetti = true
+          this.triggerEmojiExplosion('💯')
+        } else if (this.count % 100 === 69) {
+          this.animateBounce = true
+          this.triggerEmojiExplosion('👌')
         }
       } catch (error) {
         console.error('Error incrementing count:', error)
@@ -91,6 +102,22 @@ export default {
     resetConfetti() {
       // Hide confetti after the animation ends
       this.showConfetti = false
+    },
+    triggerEmojiExplosion(emoji) {
+      // Add the specific emoji to the array
+      this.emojis = this.generateEmojis(emoji)
+      this.showEmojiExplosion = true
+
+      // Hide the explosion after some time
+      setTimeout(() => {
+        this.showEmojiExplosion = false
+      }, 1500)
+    },
+    generateEmojis(emoji) {
+      return Array.from({ length: 30 }, (_, i) => ({
+        id: i,
+        symbol: emoji
+      }))
     },
     showErrorModalWithMessage(message) {
       this.errorMessage = message
@@ -168,5 +195,38 @@ export default {
 
 .animate-bounce {
   animation: bounce 1s ease;
+}
+
+/* Emoji explosion container */
+.emoji-explosion-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  z-index: 9999;
+}
+
+.emoji {
+  position: absolute;
+  font-size: 2em;
+  animation: explode 1.5s ease forwards;
+}
+
+@keyframes explode {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(calc(100vh + 100px)) scale(0.5);
+    opacity: 0;
+  }
 }
 </style>
