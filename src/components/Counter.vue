@@ -52,6 +52,7 @@ export default {
     this.fetchToken() // Fetch the token when the component is created
     this.fetchCount()
     this.connectWebSocket()
+    this.startTokenRefresh() // Start the token refresh interval
   },
   methods: {
     async fetchToken() {
@@ -61,6 +62,10 @@ export default {
       } catch (error) {
         console.error('Error fetching token:', error)
       }
+    },
+    startTokenRefresh() {
+      // Refresh the token every 5 minutes
+      setInterval(this.fetchToken, 5 * 60 * 1000)
     },
     async fetchCount() {
       try {
