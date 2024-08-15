@@ -124,6 +124,10 @@ export default {
           // Check if the count contains '6969'
           this.animateBounce = true
           this.showConfettiWithEmojis(['👌', '🔥', '😎', '💯'])
+        } else if (this.count.toString().includes('420')) {
+          // Check if the count contains '420'
+          this.animateBounce = true
+          this.showConfettiWithEmojis(['🚬', '💨', '🔥', '💭', '😮‍💨', '💯', '🌿'])
         }
       } catch (error) {
         console.error('Error incrementing count:', error)
