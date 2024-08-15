@@ -39,8 +39,6 @@ export default {
     return {
       count: 0,
       socket: null,
-      token: '', // Store the token
-      tokenExpiration: null, // Store the token expiration time
       showErrorModal: false, // Control visibility of the error modal
       errorMessage: '', // The error message to display
       animateBounce: false, // Control the bounce animation
@@ -50,21 +48,10 @@ export default {
     }
   },
   created() {
-    this.fetchToken() // Fetch the token when the component is created
     this.fetchCount()
     this.connectWebSocket()
-    this.startTokenRefreshTimer() // Start the token refresh timer
   },
   methods: {
-    async fetchToken() {
-      try {
-        const response = await axios.get('/api/token')
-        this.token = response.data.token // Store the token
-        this.tokenExpiration = Date.now() + 5 * 60 * 1000 // Set token expiration time
-      } catch (error) {
-        console.error('Error fetching token:', error)
-      }
-    },
     async fetchCount() {
       try {
         const response = await axios.get('/api/count')
@@ -75,15 +62,7 @@ export default {
     },
     async incrementCount() {
       try {
-        const response = await axios.post(
-          '/api/increment',
-          {},
-          {
-            headers: {
-              'x-access-token': this.token // Include the token in the request headers
-            }
-          }
-        )
+        const response = await axios.post('/api/increment')
         this.count = response.data.count
 
         // Trigger animation, confetti, and emoji explosion based on count
@@ -146,13 +125,6 @@ export default {
       setTimeout(() => {
         this.showErrorModal = false
       }, 3000)
-    },
-    startTokenRefreshTimer() {
-      setInterval(async () => {
-        if (Date.now() >= this.tokenExpiration) {
-          await this.fetchToken() // Fetch a new token if the current one is expired
-        }
-      }, 1000) // Check every second if the token needs to be refreshed
     }
   }
 }
