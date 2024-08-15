@@ -23,7 +23,7 @@ export default defineConfig(({ mode }) => {
       }
     },
     build: {
-      outDir: mode === 'production' ? 'dist' : '../the-button-db/public' // Adjust output directory based on the environment
+      outDir: '../the-button-db/public'
     }
   }
 })
