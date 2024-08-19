@@ -1,12 +1,13 @@
 <template>
-  <div
-    class="counter-container"
-    :class="{ 'animate-bounce': animateBounce, 'crazy-background': crazyBackground }"
-  >
+  <div class="counter-container">
     <p class="intro-text">
       Let's see how high we can collectively get this number. Clicks since 8/13/2024:
     </p>
-    <div class="counter" @animationend="resetAnimation">
+    <div
+      class="counter"
+      :class="{ 'animate-spin-pop': animateSpinPop }"
+      @animationend="resetAnimation"
+    >
       {{ count }}
     </div>
     <button class="deep-button" @click="incrementCount">Click Me</button>
@@ -56,7 +57,59 @@ export default {
         if (this.count % 10000 === 0) {
           this.triggerSpinPop()
           this.showConfettiWithEmojis([
-            // Emoji list...
+            '🎉',
+            '🥳',
+            '💥',
+            '🎆',
+            '🎇',
+            '🎊',
+            '✨',
+            '💫',
+            '🔥',
+            '🎁',
+            '🎂',
+            '🎈',
+            '🎀',
+            '🎉',
+            '🍾',
+            '🎺',
+            '🎤',
+            '🎵',
+            '🎶',
+            '🎷',
+            '🎸',
+            '🎹',
+            '🎻',
+            '🥁',
+            '🎯',
+            '🎳',
+            '🎮',
+            '🏆',
+            '🏅',
+            '🎖️',
+            '🎗️',
+            '🏵️',
+            '🏮',
+            '🎐',
+            '🎏',
+            '🎎',
+            '🎟️',
+            '🎫',
+            '🕺',
+            '💃',
+            '🕯️',
+            '🎋',
+            '🎍',
+            '🎠',
+            '🎡',
+            '🎢',
+            '🎨',
+            '🎭',
+            '🎰',
+            '🎲',
+            '🎴',
+            '🃏',
+            '🎮'
           ])
         } else if (this.count % 1000 === 0) {
           this.triggerSpinPop()
@@ -70,6 +123,40 @@ export default {
         } else if (this.count.toString().includes('6969')) {
           this.triggerSpinPop()
           this.showConfettiWithEmojis(['👌', '🔥', '😎', '💯'])
+        } else if (this.count.toString().includes('1776')) {
+          this.triggerSpinPop()
+          this.showConfettiWithEmojis([
+            '🇺🇸',
+            '🎆',
+            '🎇',
+            '🗽',
+            '🎉',
+            '🎊',
+            '🍔',
+            '🌭',
+            '🥧',
+            '🍻',
+            '🎈',
+            '🎯',
+            '🎺'
+          ])
+        } else if (this.count.toString().includes('808')) {
+          this.triggerSpinPop()
+          this.showConfettiWithEmojis([
+            '🥁',
+            '🎶',
+            '🎵',
+            '🎸',
+            '🎷',
+            '🎺',
+            '🎤',
+            '🎼',
+            '🎧',
+            '🪘',
+            '🎻',
+            '🎹',
+            '🎙️'
+          ])
         } else if (this.count.toString().includes('420')) {
           this.triggerSpinPop()
           this.showConfettiWithEmojis(['🚬', '💨', '🔥', '💭', '😮‍💨', '💯', '🌿'])
@@ -108,7 +195,7 @@ export default {
       this.jsConfetti.addConfetti({
         emojis: emojis,
         confettiRadius: 12, // Increase the size of the emojis
-        confettiNumber: 200 // Increase the number of emojis
+        confettiNumber: 100 // Increase the number of emojis
       })
     },
     showErrorModalWithMessage(message) {
@@ -131,28 +218,6 @@ export default {
   height: 100vh;
   background-color: #f5f5f5;
   transition: background-color 0.5s ease; /* Smooth transition */
-}
-
-.counter-container.crazy-background {
-  animation: crazyBackground 0.5s linear infinite;
-}
-
-@keyframes crazyBackground {
-  0% {
-    background-color: #ff0000;
-  }
-  25% {
-    background-color: #00ff00;
-  }
-  50% {
-    background-color: #0000ff;
-  }
-  75% {
-    background-color: #ffff00;
-  }
-  100% {
-    background-color: #ff00ff;
-  }
 }
 
 /* Other existing styles */
