@@ -253,8 +253,8 @@ export default {
 
 .deep-button {
   touch-action: manipulation;
-  width: 150px;
-  height: 150px;
+  width: 200px;
+  height: 200px;
   border-radius: 50%;
   background-color: #6200ea;
   color: white;
