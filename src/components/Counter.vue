@@ -29,9 +29,8 @@ export default {
       socket: null,
       showErrorModal: false,
       errorMessage: '',
-      animateBounce: false,
       jsConfetti: null,
-      crazyBackground: false // New state for triggering background color changes
+      animateSpinPop: false // New state for spinning and popping out the number
     }
   },
   created() {
@@ -55,86 +54,27 @@ export default {
 
         // Trigger animation, confetti, and emoji explosion based on count
         if (this.count % 10000 === 0) {
-          this.triggerCrazyBackground()
-          this.animateBounce = true
+          this.triggerSpinPop()
           this.showConfettiWithEmojis([
-            '🎉',
-            '🥳',
-            '💥',
-            '🎆',
-            '🎇',
-            '🎊',
-            '✨',
-            '💫',
-            '🔥',
-            '🎁',
-            '🎂',
-            '🎈',
-            '🎀',
-            '🎉',
-            '🍾',
-            '🎺',
-            '🎤',
-            '🎵',
-            '🎶',
-            '🎷',
-            '🎸',
-            '🎹',
-            '🎻',
-            '🥁',
-            '🎯',
-            '🎳',
-            '🎮',
-            '🏆',
-            '🏅',
-            '🎖️',
-            '🎗️',
-            '🏵️',
-            '🏮',
-            '🎐',
-            '🎏',
-            '🎎',
-            '🎟️',
-            '🎫',
-            '🕺',
-            '💃',
-            '🕯️',
-            '🎋',
-            '🎍',
-            '🎠',
-            '🎡',
-            '🎢',
-            '🎨',
-            '🎭',
-            '🎰',
-            '🎲',
-            '🎴',
-            '🃏',
-            '🎮'
+            // Emoji list...
           ])
         } else if (this.count % 1000 === 0) {
-          this.triggerCrazyBackground()
-          this.animateBounce = true
+          this.triggerSpinPop()
           this.showConfettiWithEmojis(['🎉', '🥳', '🎊', '🎆', '🎇'])
         } else if (this.count % 100 === 0) {
-          this.triggerCrazyBackground()
-          this.animateBounce = true
+          this.triggerSpinPop()
           this.showConfettiWithEmojis(['💯', '🎉'])
         } else if (this.count % 100 === 69) {
-          this.triggerCrazyBackground()
-          this.animateBounce = true
+          this.triggerSpinPop()
           this.showConfettiWithEmojis(['👌', '🔥'])
         } else if (this.count.toString().includes('6969')) {
-          this.triggerCrazyBackground()
-          this.animateBounce = true
+          this.triggerSpinPop()
           this.showConfettiWithEmojis(['👌', '🔥', '😎', '💯'])
         } else if (this.count.toString().includes('420')) {
-          this.triggerCrazyBackground()
-          this.animateBounce = true
+          this.triggerSpinPop()
           this.showConfettiWithEmojis(['🚬', '💨', '🔥', '💭', '😮‍💨', '💯', '🌿'])
         } else if (this.count.toString().includes('666')) {
-          this.triggerCrazyBackground()
-          this.animateBounce = true
+          this.triggerSpinPop()
           this.showConfettiWithEmojis(['😈', '👹', '👺', '🔥', '👿', '💀', '☠️'])
         }
       } catch (error) {
@@ -158,22 +98,18 @@ export default {
         console.log('WebSocket connection closed')
       }
     },
-    resetAnimation() {
-      this.animateBounce = false
+    triggerSpinPop() {
+      this.animateSpinPop = true
+      setTimeout(() => {
+        this.animateSpinPop = false
+      }, 1000) // Duration of the spin and pop-out effect
     },
     showConfettiWithEmojis(emojis) {
       this.jsConfetti.addConfetti({
         emojis: emojis,
-        confettiRadius: 12,
-        confettiNumber: 300
+        confettiRadius: 12, // Increase the size of the emojis
+        confettiNumber: 200 // Increase the number of emojis
       })
-    },
-    triggerCrazyBackground() {
-      this.crazyBackground = true
-      console.log('🐒 ~ this.crazyBackground:', this.crazyBackground)
-      setTimeout(() => {
-        this.crazyBackground = false
-      }, 1000) // Background color changes for 1 second
     },
     showErrorModalWithMessage(message) {
       this.errorMessage = message
@@ -232,6 +168,22 @@ export default {
   font-size: 2em;
   margin-bottom: 20px;
   transition: transform 0.5s ease; /* Smooth transition for the animation */
+}
+
+.animate-spin-pop {
+  animation: spinPop 1s ease;
+}
+
+@keyframes spinPop {
+  0% {
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    transform: scale(1.5) rotate(360deg);
+  }
+  100% {
+    transform: scale(1) rotate(720deg);
+  }
 }
 
 .deep-button {
