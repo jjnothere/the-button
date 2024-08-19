@@ -244,10 +244,10 @@ export default {
     transform: scale(1) rotate(0deg);
   }
   50% {
-    transform: scale(1.5) rotate(360deg);
+    transform: scale(2) rotate(360deg); /* Scale to 2x size and rotate */
   }
   100% {
-    transform: scale(1) rotate(720deg);
+    transform: scale(1) rotate(720deg); /* Return to normal size and complete 2 spins */
   }
 }
 
