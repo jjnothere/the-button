@@ -1,13 +1,12 @@
 <template>
-  <div class="counter-container">
+  <div
+    class="counter-container"
+    :class="{ 'animate-bounce': animateBounce, 'crazy-background': crazyBackground }"
+  >
     <p class="intro-text">
       Let's see how high we can collectively get this number. Clicks since 8/13/2024:
     </p>
-    <div
-      class="counter"
-      :class="{ 'animate-bounce': animateBounce }"
-      @animationend="resetAnimation"
-    >
+    <div class="counter" @animationend="resetAnimation">
       {{ count }}
     </div>
     <button class="deep-button" @click="incrementCount">Click Me</button>
@@ -28,10 +27,11 @@ export default {
     return {
       count: 0,
       socket: null,
-      showErrorModal: false, // Control visibility of the error modal
-      errorMessage: '', // The error message to display
-      animateBounce: false, // Control the bounce animation
-      jsConfetti: null // Reference to the jsConfetti instance
+      showErrorModal: false,
+      errorMessage: '',
+      animateBounce: false,
+      jsConfetti: null,
+      crazyBackground: false // New state for triggering background color changes
     }
   },
   created() {
@@ -55,6 +55,7 @@ export default {
 
         // Trigger animation, confetti, and emoji explosion based on count
         if (this.count % 10000 === 0) {
+          this.triggerCrazyBackground()
           this.animateBounce = true
           this.showConfettiWithEmojis([
             '🎉',
@@ -112,24 +113,27 @@ export default {
             '🎮'
           ])
         } else if (this.count % 1000 === 0) {
+          this.triggerCrazyBackground()
           this.animateBounce = true
           this.showConfettiWithEmojis(['🎉', '🥳', '🎊', '🎆', '🎇'])
         } else if (this.count % 100 === 0) {
+          this.triggerCrazyBackground()
           this.animateBounce = true
           this.showConfettiWithEmojis(['💯', '🎉'])
         } else if (this.count % 100 === 69) {
+          this.triggerCrazyBackground()
           this.animateBounce = true
           this.showConfettiWithEmojis(['👌', '🔥'])
         } else if (this.count.toString().includes('6969')) {
-          // Check if the count contains '6969'
+          this.triggerCrazyBackground()
           this.animateBounce = true
           this.showConfettiWithEmojis(['👌', '🔥', '😎', '💯'])
         } else if (this.count.toString().includes('420')) {
-          // Check if the count contains '420'
+          this.triggerCrazyBackground()
           this.animateBounce = true
           this.showConfettiWithEmojis(['🚬', '💨', '🔥', '💭', '😮‍💨', '💯', '🌿'])
         } else if (this.count.toString().includes('666')) {
-          // Check if the count contains '666'
+          this.triggerCrazyBackground()
           this.animateBounce = true
           this.showConfettiWithEmojis(['😈', '👹', '👺', '🔥', '👿', '💀', '☠️'])
         }
@@ -155,15 +159,21 @@ export default {
       }
     },
     resetAnimation() {
-      // Reset the animation class after it finishes
       this.animateBounce = false
     },
     showConfettiWithEmojis(emojis) {
       this.jsConfetti.addConfetti({
         emojis: emojis,
-        confettiRadius: 6,
-        confettiNumber: 100
+        confettiRadius: 12,
+        confettiNumber: 300
       })
+    },
+    triggerCrazyBackground() {
+      this.crazyBackground = true
+      console.log('🐒 ~ this.crazyBackground:', this.crazyBackground)
+      setTimeout(() => {
+        this.crazyBackground = false
+      }, 1000) // Background color changes for 1 second
     },
     showErrorModalWithMessage(message) {
       this.errorMessage = message
@@ -184,7 +194,32 @@ export default {
   justify-content: center;
   height: 100vh;
   background-color: #f5f5f5;
+  transition: background-color 0.5s ease; /* Smooth transition */
 }
+
+.counter-container.crazy-background {
+  animation: crazyBackground 0.5s linear infinite;
+}
+
+@keyframes crazyBackground {
+  0% {
+    background-color: #ff0000;
+  }
+  25% {
+    background-color: #00ff00;
+  }
+  50% {
+    background-color: #0000ff;
+  }
+  75% {
+    background-color: #ffff00;
+  }
+  100% {
+    background-color: #ff00ff;
+  }
+}
+
+/* Other existing styles */
 
 .intro-text {
   font-size: 1.2em;
