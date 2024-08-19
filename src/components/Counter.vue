@@ -195,7 +195,7 @@ export default {
       this.jsConfetti.addConfetti({
         emojis: emojis,
         confettiRadius: 12, // Increase the size of the emojis
-        confettiNumber: 100 // Increase the number of emojis
+        confettiNumber: 150 // Increase the number of emojis
       })
     },
     showErrorModalWithMessage(message) {
