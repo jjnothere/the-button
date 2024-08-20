@@ -111,6 +111,31 @@ export default {
             '🃏',
             '🎮'
           ])
+        } else if (
+          this.count
+            .toString()
+            .split('')
+            .every((digit, _, arr) => digit === arr[0])
+        ) {
+          this.triggerSpinPop()
+          this.showConfettiWithEmojis([
+            '😲',
+            '😮',
+            '😯',
+            '😳',
+            '😱',
+            '🎉',
+            '✨',
+            '🎊',
+            '🎇',
+            '🎆',
+            '⭐',
+            '🌟',
+            '👌',
+            '🔥',
+            '😎',
+            '💯'
+          ])
         } else if (this.count % 1000 === 0) {
           this.triggerSpinPop()
           this.showConfettiWithEmojis(['🎉', '🥳', '🎊', '🎆', '🎇'])
